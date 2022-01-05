@@ -1,3 +1,12 @@
+# GNL: Godot Network Lib
+
+This is a standalone repo for GNL, a C++ library for MMO games built with Godot. Networking is made with Boost.Asio, heavily based on Javidx9's course.
+The compiled project is a .dll file that contains C++ bindings for GDNative. The goal is to turn networking as high-level as possible inside GDScripts.
+
+# Usage
+
+# To-do's
+
 # Build instructions
 
 After cloning the main repository, open Git in stumbledinthumbs directory and run:
