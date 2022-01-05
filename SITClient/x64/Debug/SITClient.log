@@ -1,0 +1,6 @@
+﻿  gdlibrary.cpp
+D:\Github\stumbledinthumbs\NetworkLib\godot-cpp\include\core\Defs.hpp(62,10): fatal error C1083: Não é possível abrir arquivo incluir: 'GodotGlobal.hpp': No such file or directory
+  GDNative.cpp
+D:\Github\stumbledinthumbs\NetworkLib\godot-cpp\include\core\Defs.hpp(62,10): fatal error C1083: Não é possível abrir arquivo incluir: 'GodotGlobal.hpp': No such file or directory
+  Main.cpp
+  Gerando Código...
