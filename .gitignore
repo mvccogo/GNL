@@ -7,4 +7,11 @@
 *.exe
 *.ilk
 *.pdb
+*.dll
+*.exp
+*.lib
+*.obj
+
 temp/
+SITClient/x64/
+
