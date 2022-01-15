@@ -1,31 +1,38 @@
 #include "GDNative.h"
-#include "SITClient.h"
 
+
+#include <godot_cpp/core/class_db.hpp>
+
+#include <godot_cpp/classes/global_constants.hpp>
+#include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
+
+#include "SITClient.h"
 
 const uint16_t MAX_LEN = 1024*5;
 using namespace godot;
 using namespace SITNet;
 
-void NetNode::_register_methods() {
-	register_method("_process", &NetNode::_process);
-	register_method("ConnectToServer", &NetNode::Connect);
-	register_method("SendPacket", &NetNode::SendPacket);
-	register_method("PreparePacket", &NetNode::PreparePacket);
-	register_method("PrepareNextPkt", &NetNode::PrepareNextPkt);
-	register_method("WriteCmd", &NetNode::WriteCmd);
-	register_method("WriteShort", &NetNode::WriteShort);
-	register_method("WriteLong", &NetNode::WriteLong);
-	register_method("WriteLongLong", &NetNode::WriteLongLong);
-	register_method("WriteString", &NetNode::WriteString);
-	register_method("WriteDouble", &NetNode::WriteDouble);
+void NetNode::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_process"), &NetNode::_process);
+	ClassDB::bind_method(D_METHOD("ConnectToServer"), &NetNode::Connect);
+	ClassDB::bind_method(D_METHOD("SendPacket"), &NetNode::SendPacket);
+	ClassDB::bind_method(D_METHOD("PreparePacket"), &NetNode::PreparePacket);
+	ClassDB::bind_method(D_METHOD("PrepareNextPkt"), &NetNode::PrepareNextPkt);
+	ClassDB::bind_method(D_METHOD("WriteCmd"), &NetNode::WriteCmd);
+	ClassDB::bind_method(D_METHOD("WriteShort"), &NetNode::WriteShort);
+	ClassDB::bind_method(D_METHOD("WriteLong"), &NetNode::WriteLong);
+	ClassDB::bind_method(D_METHOD("WriteLongLong"), &NetNode::WriteLongLong);
+	ClassDB::bind_method(D_METHOD("WriteString"), &NetNode::WriteString);
+	ClassDB::bind_method(D_METHOD("WriteDouble"), &NetNode::WriteDouble);
+	
+	ClassDB::bind_method(D_METHOD("ReadShort"), &NetNode::ReadShort);
+	ClassDB::bind_method(D_METHOD("ReadLong"), &NetNode::ReadLong);
+	ClassDB::bind_method(D_METHOD("ReadLongLong"), &NetNode::ReadLongLong);
+	ClassDB::bind_method(D_METHOD("ReadString"), &NetNode::ReadString);
+	ClassDB::bind_method(D_METHOD("ReadDouble"), &NetNode::ReadDouble);
 
-	register_method("ReadShort", &NetNode::ReadShort);
-	register_method("ReadLong", &NetNode::ReadLong);
-	register_method("ReadLongLong", &NetNode::ReadLongLong);
-	register_method("ReadString", &NetNode::ReadString);
-	register_method("ReadDouble", &NetNode::ReadDouble);
-
-	register_signal<NetNode>((char*)"packet_received", "packet_cmd_id", GODOT_VARIANT_TYPE_INT);
+	ADD_SIGNAL(MethodInfo("packet_received", PropertyInfo(Variant::INT, "packet_cmd_id")));
 }
 
 
@@ -74,7 +81,7 @@ bool NetNode::PreparePacket() {
 	return true;
 }
 
-void NetNode::WriteCmd(uint16_t cmdid) {
+void NetNode::WriteCmd(GDNativeInt cmdid) {
 	m_pktOut.header.cmdID = static_cast<CMD>(cmdid);
 }
 
@@ -83,8 +90,8 @@ void NetNode::SendPacket() {
 	return;
 }
 
-void NetNode::WriteShort(uint16_t data) {
-	 m_pktOut << data; 
+void NetNode::WriteShort(GDNativeInt data) {
+	 m_pktOut << static_cast<uint16_t>(data); 
 }
 
 void NetNode::WriteLong(uint32_t data) {
@@ -99,7 +106,7 @@ void NetNode::WriteString(String data) {
 	size_t oldBody = m_pktOut.body.size();
 	m_pktOut.body.resize(oldBody + data.length() + 1);
 	memset(m_pktOut.body.data() + oldBody, '\0', 1);
-	memcpy(m_pktOut.body.data() + oldBody + 1, data.alloc_c_string(), data.length());
+	memcpy(m_pktOut.body.data() + oldBody + 1, data.utf8().get_data() , data.length());
 	m_pktOut.header.size = m_pktOut.get_packet_len();
 }
 
@@ -126,7 +133,7 @@ uint64_t NetNode::ReadLongLong() {
 }
 
 String NetNode::ReadString() {
-	char data[MAX_LEN]{0};
+	char data[1024 * 5]{0};
 	size_t oldBody = m_pktIn.body.size();
 	size_t strlen = 0;
 	for (auto i = m_pktIn.body.rbegin() ; *i; i++) {
