@@ -21,7 +21,13 @@ void Server::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt
 	{
 	case CMD::Ping:
 	{
-		std::cout << "[" << client->GetID() << "]: Server Ping\n";
+		std::cout << "[" << client->GetID() << "]: requested server ping\n";
+		long long timeRec;
+		auto millisec_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		pkt >> timeRec;
+		long long ping = millisec_since_epoch - timeRec;
+		std::cout << "Ping: " << ping << std::endl;
+		pkt << timeRec;
 		SendToClient(client, pkt);
 	}
 	break;

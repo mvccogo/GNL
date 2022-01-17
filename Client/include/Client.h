@@ -20,7 +20,7 @@ namespace NetLib {
 			pkt.header.cmdID = NetLib::CMD::Ping;
 			std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
 			pkt << timeNow;
-			//SendToServer(pkt);
+			SendToServer(pkt);
 		}
 
 	};

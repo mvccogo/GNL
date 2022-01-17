@@ -19,7 +19,7 @@ void NetNode::_register_methods() {
 	register_method("WriteLongLong", &NetNode::WriteLongLong);
 	register_method("WriteString", &NetNode::WriteString);
 	register_method("WriteDouble", &NetNode::WriteDouble);
-
+	register_method("PingServer", &NetNode::PingServer);
 	register_method("ReadShort", &NetNode::ReadShort);
 	register_method("ReadLong", &NetNode::ReadLong);
 	register_method("ReadLongLong", &NetNode::ReadLongLong);

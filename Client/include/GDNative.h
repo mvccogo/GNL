@@ -34,6 +34,16 @@ namespace godot {
 		void WriteLongLong(uint64_t data);
 		void WriteString(String data);
 		void WriteDouble(double_t data);
+		
+		void PingServer() {
+			NetLib::Packet <NetLib::CMD> pkt;
+			pkt.header.cmdID = NetLib::CMD::Ping;
+			std::chrono::system_clock::time_point timeNow = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
+			std::chrono::duration millisNow = timeNow.time_since_epoch();
+			pkt << millisNow.count();
+			m_Client.SendToServer(pkt);
+		}
+
 
 		uint16_t	ReadShort();
 		uint32_t	ReadLong();
