@@ -2,7 +2,7 @@
 #include "NetCommon.h"
 #include "NetQueue.h"
 #include "NetPacket.h"
-#include "NetConnection.h"
+#include "NetTCPConnection.h"
 #include "NetServerApp.h"
 
 class World;
@@ -15,14 +15,14 @@ namespace NetLib {
 		~Server();
 
 	protected:
-		virtual bool OnClientConnect(std::shared_ptr<Connection<CMD>>& client) override {
+		virtual bool OnClientConnect(std::shared_ptr<TCPConnection<CMD>>& client) override {
 			Packet<CMD> pkt;
-			pkt.header.cmdID = CMD::AcceptConnection;
+			pkt.header.cmdID = CMD::AcceptTCPConnection;
 			SendToClient(client, pkt);
 			return true;
 		}
-		virtual void OnClientDisconnect(std::shared_ptr<Connection<CMD>>& client) override;
-		virtual void OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt) override;
+		virtual void OnClientDisconnect(std::shared_ptr<TCPConnection<CMD>>& client) override;
+		virtual void OnPacket(std::shared_ptr<TCPConnection<CMD>>& client, Packet<CMD>& pkt) override;
 		
 
 	private:

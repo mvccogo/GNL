@@ -2,7 +2,7 @@
 #include "NetCommon.h"
 #include "NetQueue.h"
 #include "NetPacket.h"
-#include "NetConnection.h"
+#include "NetTCPConnection.h"
 
 
 namespace NetLib {
@@ -12,6 +12,9 @@ namespace NetLib {
 		ServerApp(uint16_t port)
 			: m_ASIOAcceptor(m_ASIOContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port), true)
 		{
+	
+
+
 		}
 			
 		~ServerApp()
@@ -22,7 +25,7 @@ namespace NetLib {
 		bool Start() {
 			try
 			{
-				AwaitConnection();
+				AwaitTCPConnection();
 				m_threadContext = std::thread([this]() { m_ASIOContext.run(); });
 			}
 			catch (std::exception& e)
@@ -40,38 +43,38 @@ namespace NetLib {
 			if (m_threadContext.joinable()) m_threadContext.join();
 			std::cout << "[SERVER] Stopped!\n";
 		}
-		void AwaitConnection() {
+		void AwaitTCPConnection() {
 			m_ASIOAcceptor.async_accept(
 				[this](std::error_code ec, asio::ip::tcp::socket socket)
 				{
 					if (!ec)
 					{
-						std::cout << "[SERVER] New Connection: " << socket.remote_endpoint() << "\n";
+						std::cout << "[SERVER] New TCPConnection: " << socket.remote_endpoint() << "\n";
 
-						std::shared_ptr<Connection<T>> newconn =
-							std::make_shared<Connection<T>>(Connection<T>::ConnectType::Server,
+						std::shared_ptr<TCPConnection<T>> newconn =
+							std::make_shared<TCPConnection<T>>(TCPConnection<T>::ConnectType::Server,
 								m_ASIOContext, std::move(socket), m_PktIn);
 
 						if (OnClientConnect(newconn))
 						{
-							m_Connections.push_back(move(newconn));
-							m_Connections.back()->ConnectToClient(m_IDCnt++);
+							m_TCPConnections.push_back(move(newconn));
+							m_TCPConnections.back()->ConnectToClient(m_IDCnt++);
 							
-							std::cout << "[" << m_Connections.back()->GetID() << "] Connection Approved\n";
+							std::cout << "[" << m_TCPConnections.back()->GetID() << "] TCPConnection Approved\n";
 						}
 						else
 						{
-							std::cout << "[-----] Connection Denied\n";
+							std::cout << "[-----] TCPConnection Denied\n";
 						}
 					}
 					else
 					{
-						std::cout << "[SERVER] New Connection Error: " << ec.message() << "\n";
+						std::cout << "[SERVER] New TCPConnection Error: " << ec.message() << "\n";
 					}
-					AwaitConnection();
+					AwaitTCPConnection();
 				});
 		}
-		void SendToClient(std::shared_ptr<Connection<T>>& client, const Packet<T>& pkt) {
+		void SendToClient(std::shared_ptr<TCPConnection<T>>& client, const Packet<T>& pkt) {
 			if (client && client->IsConnected())
 			{
 				client->SendPacket(pkt);
@@ -79,20 +82,20 @@ namespace NetLib {
 			else
 			{
 				OnClientDisconnect(client);
-				m_Connections.erase(std::remove(m_Connections.begin(), m_Connections.end(), client), m_Connections.end());
-				client.reset();
 
-				std::cout << "Connection deque after removal: " << std::endl;
-				for (int i = 0; i < m_Connections.size(); i++) {
-					std::cout << "[" << m_Connections.at(i)->GetID() << "]\n";
+				m_TCPConnections.erase(std::remove(m_TCPConnections.begin(), m_TCPConnections.end(), client), m_TCPConnections.end());
+				client = nullptr;
+				std::cout << "TCPConnection deque after removal: " << std::endl;
+				for (int i = 0; i < m_TCPConnections.size(); i++) {
+					std::cout << "[" << m_TCPConnections.at(i)->GetID() << "]\n";
 
 				}
 			}
 		}
-		void SendToAll(const Packet<T>& pkt, std::shared_ptr<Connection<T>>& ignore_client = nullptr) {
+		void SendToAll(const Packet<T>& pkt, std::shared_ptr<TCPConnection<T>>& ignore_client = nullptr) {
 			bool bInvalidClientExists = false;
 
-			for (auto& client : m_Connections)
+			for (auto& client : m_TCPConnections)
 			{
 				if (client && client->IsConnected())
 				{
@@ -102,14 +105,14 @@ namespace NetLib {
 				else
 				{
 					OnClientDisconnect(client);
-					client.reset();
+					client = nullptr;
 					bInvalidClientExists = true;
 				}
 			}
 
 			if (bInvalidClientExists) {
-				m_Connections.erase(
-					std::remove(m_Connections.begin(), m_Connections.end(), nullptr), m_Connections.end());
+				m_TCPConnections.erase(
+					std::remove(m_TCPConnections.begin(), m_TCPConnections.end(), nullptr), m_TCPConnections.end());
 				
 			}
 		}
@@ -126,13 +129,13 @@ namespace NetLib {
 			}
 		}
 	protected:
-		virtual bool OnClientConnect(std::shared_ptr<Connection<T>>& client) { return false; }
-		virtual void OnClientDisconnect(std::shared_ptr<Connection<T>>& client){ };
-		virtual void OnPacket(std::shared_ptr<Connection<T>>& client, Packet<T>& pkt){};
+		virtual bool OnClientConnect(std::shared_ptr<TCPConnection<T>>& client) { return false; }
+		virtual void OnClientDisconnect(std::shared_ptr<TCPConnection<T>>& client){ };
+		virtual void OnPacket(std::shared_ptr<TCPConnection<T>>& client, Packet<T>& pkt){};
 
 
 		NetQueue<OwnedPacket<T>>						m_PktIn;
-		std::deque<std::shared_ptr<Connection<T>>>		m_Connections;
+		std::deque<std::shared_ptr<TCPConnection<T>>>		m_TCPConnections;
 		asio::io_context								m_ASIOContext;
 		asio::ip::tcp::acceptor							m_ASIOAcceptor;
 		uint32_t										m_IDCnt;

@@ -31,7 +31,7 @@ void World::FlagMoveUpdate(Character& cha) {
 	
 	for (auto i = m_chaMap.begin(); i != m_chaMap.end(); i++) {
 		if (i->second.GetID() == cha.GetID()) continue;
-		i->second.GetConnection()->SendPacket(pkt);
+		i->second.GetTCPConnection()->SendPacket(pkt);
 	}
 	
 }

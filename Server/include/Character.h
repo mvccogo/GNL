@@ -23,13 +23,13 @@ public:
 
 
 	uint16_t GetID() { return m_ID; }
-	void SetConnection(std::shared_ptr<NetLib::Connection<NetLib::CMD>>& ptr) { m_Connection = ptr; }
-	std::shared_ptr<NetLib::Connection<NetLib::CMD>> GetConnection() { return m_Connection; }
+	void SetTCPConnection(std::shared_ptr<NetLib::TCPConnection<NetLib::CMD>>& ptr) { m_TCPConnection = ptr; }
+	std::shared_ptr<NetLib::TCPConnection<NetLib::CMD>> GetTCPConnection() { return m_TCPConnection; }
 
 		
 
 private:
-	std::shared_ptr<NetLib::Connection<NetLib::CMD>>			m_Connection;
+	std::shared_ptr<NetLib::TCPConnection<NetLib::CMD>>			m_TCPConnection;
 	std::string				m_szName;
 	uint16_t				m_ID;
 	uint16_t				m_curMapID;

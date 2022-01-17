@@ -16,7 +16,7 @@ Server::~Server() {
 
 
 }
-void Server::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt) {
+void Server::OnPacket(std::shared_ptr<TCPConnection<CMD>>& client, Packet<CMD>& pkt) {
 	switch (pkt.header.cmdID)
 	{
 	case CMD::Ping:
@@ -49,18 +49,18 @@ void Server::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt
 		std::cout << "[" << client->GetID() << "]: Entered world\n";
 		auto cha = std::make_shared<Character>();
 		cha->SetID(client->GetID());
-		cha->SetConnection(client);
+		cha->SetTCPConnection(client);
 		cha->SetWorld(m_World);
 		m_World->AddChaToWorld(cha->GetID(), *cha);
 
 		Packet<CMD> pkt; 
 		pkt.header.cmdID = CMD::SelfEnterWorld;
-		std::vector<shared_ptr<NetLib::Connection<NetLib::CMD>>> notifylist;
+		std::vector<shared_ptr<NetLib::TCPConnection<NetLib::CMD>>> notifylist;
 		for (auto i = m_World->m_chaMap.begin(); i != m_World->m_chaMap.end(); i++) {
 			pkt << i->second.GetID();
 			pkt << i->second.GetPosX();
 			pkt << i->second.GetPosY();
-			notifylist.push_back(i->second.GetConnection());
+			notifylist.push_back(i->second.GetTCPConnection());
 			// Will this always work?
 		}
 
@@ -89,7 +89,7 @@ void Server::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt
 			pkt << cha->GetID();
 			pkt << cha->GetPosX();
 			pkt << cha->GetPosY();
-			auto client = i->second.GetConnection();
+			auto client = i->second.GetTCPConnection();
 			SendToClient(client, pkt);
 		}*/
 	
@@ -117,7 +117,7 @@ void Server::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt
 }
 
 
-void Server::OnClientDisconnect(std::shared_ptr<Connection<CMD>>& client) {
+void Server::OnClientDisconnect(std::shared_ptr<TCPConnection<CMD>>& client) {
 		std::cout << "Removing client [" << client->GetID() << "]\n";
 		m_World->RemoveChaFromWorld(client->GetID());
 }

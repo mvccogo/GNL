@@ -6,7 +6,7 @@
 namespace NetLib 
 {
 	template <typename T>
-	class Connection : public std::enable_shared_from_this<Connection<T>>
+	class TCPConnection : public std::enable_shared_from_this<TCPConnection<T>>
 	{
 
 		friend class NetQueue<T>;
@@ -15,13 +15,13 @@ namespace NetLib
 			Server,
 			Client
 		};
-		Connection(ConnectType type, asio::io_context& asioContext, asio::ip::tcp::socket socket, NetQueue<OwnedPacket<T>>& Receiver) 
+		TCPConnection(ConnectType type, asio::io_context& asioContext, asio::ip::tcp::socket socket, NetQueue<OwnedPacket<T>>& Receiver) 
 			: m_ASIOContext(asioContext), m_Socket(std::move(socket)), m_PktIn(Receiver)
 		{
 			m_Type = type;
 		}
 
-		~Connection() {};
+		~TCPConnection() {};
 
 		uint32_t GetID() const { return m_sID; }
 

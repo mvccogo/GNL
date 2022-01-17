@@ -6,7 +6,7 @@ namespace NetLib {
 
 	enum class CMD : uint16_t {
 		Invalid,
-		AcceptConnection,
+		AcceptTCPConnection,
 		SelfEnterWorld,
 		PlyEnterWorld,
 		ServerMessage,
@@ -81,11 +81,11 @@ namespace NetLib {
 
 
 	template <typename T>
-	class Connection;
+	class TCPConnection;
 
 	template <typename T>
 	struct OwnedPacket {
-		std::shared_ptr<Connection<T>> connectionPtr = nullptr;
+		std::shared_ptr<TCPConnection<T>> connectionPtr = nullptr;
 		Packet<T> pkt;
 
 	};
