@@ -3,7 +3,7 @@
 #include "NetPacket.h"
 #include "NetQueue.h"
 
-namespace SITNet 
+namespace NetLib 
 {
 	template <typename T>
 	class Connection : public std::enable_shared_from_this<Connection<T>>
@@ -107,7 +107,7 @@ namespace SITNet
 					else
 					{
 
-						std::cout << "[" << m_sID << "] Write Header Fail.\n";
+						std::cout << "[" << m_sID << "] Write Header Fail, error code: " << ec << "\n";
 						m_Socket.close();
 					}
 				});
@@ -147,9 +147,14 @@ namespace SITNet
 							PushToIncomingQueue();
 						}
 					}
+					else if (ec.value() == WSAECONNRESET) {
+						// An existing connection was forcibly closed by the remote host.
+						// No need to log this.
+						m_Socket.close();
+					}
 					else
 					{
-						std::cout << "[" << m_sID << "] Read Header Fail.\n";
+						std::cout << "[" << m_sID << "] Read Header Fail, error code: " << ec.value() << ", message:" << ec.message() << "\n";
 						m_Socket.close();
 					}
 				});

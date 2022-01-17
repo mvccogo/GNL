@@ -1,14 +1,15 @@
 #include "GDNative.h"
-#include "SITClient.h"
+#include "Client.h"
 
 
 const uint16_t MAX_LEN = 1024*5;
 using namespace godot;
-using namespace SITNet;
+using namespace NetLib;
 
 void NetNode::_register_methods() {
 	register_method("_process", &NetNode::_process);
 	register_method("ConnectToServer", &NetNode::Connect);
+	register_method("DisconnectFromServer", &NetNode::Disconnect);
 	register_method("SendPacket", &NetNode::SendPacket);
 	register_method("PreparePacket", &NetNode::PreparePacket);
 	register_method("PrepareNextPkt", &NetNode::PrepareNextPkt);
@@ -34,12 +35,12 @@ NetNode::NetNode() {
 }
 
 NetNode::~NetNode() {
-	if(m_sitclient.IsConnected())
-	m_sitclient.Disconnect();
+	if(m_Client.IsConnected())
+	m_Client.Disconnect();
 }
 
 void NetNode::_init() {
-	m_pktIn.header.cmdID = SITNet::CMD::Invalid;
+	m_pktIn.header.cmdID = NetLib::CMD::Invalid;
 
 
 
@@ -47,10 +48,10 @@ void NetNode::_init() {
 
 void NetNode::_process(float delta) {
 
-	if (m_sitclient.IsConnected()) {
-		if (!m_sitclient.GetIncomingPktQue().is_empty()) {
+	if (m_Client.IsConnected()) {
+		if (!m_Client.GetIncomingPktQue().is_empty()) {
 
-			m_pktIn = m_sitclient.GetIncomingPktQue().get_front().pkt;
+			m_pktIn = m_Client.GetIncomingPktQue().get_front().pkt;
 			emit_signal("packet_received", static_cast<int> (m_pktIn.header.cmdID));
 		
 		}
@@ -61,13 +62,18 @@ void NetNode::_process(float delta) {
 
 }
 
-void NetNode::Connect() {
-	m_sitclient.Connect("26.192.37.108", 9313);
+void NetNode::Connect(String host, uint16_t port) {
+	m_Client.Connect(host.alloc_c_string(), port);
+	//m_Client.Connect("127.0.0.1", 2222);
+}
+
+void NetNode::Disconnect() {
+	m_Client.Disconnect();
 }
 
 
 bool NetNode::PreparePacket() {
-	if (!m_sitclient.IsConnected()) {
+	if (!m_Client.IsConnected()) {
 		return false;
 	}
 	m_pktOut.body.clear();
@@ -79,7 +85,7 @@ void NetNode::WriteCmd(uint16_t cmdid) {
 }
 
 void NetNode::SendPacket() {
-	m_sitclient.SendToServer(m_pktOut);
+	m_Client.SendToServer(m_pktOut);
 	return;
 }
 
@@ -144,8 +150,8 @@ double_t NetNode::ReadDouble() {
 }
 
 void NetNode::PrepareNextPkt() {
-	m_sitclient.GetIncomingPktQue().pop_front();
+	m_Client.GetIncomingPktQue().pop_front();
 	m_pktIn.body.clear();
-	m_pktIn.header.cmdID = SITNet::CMD::Invalid;
+	m_pktIn.header.cmdID = NetLib::CMD::Invalid;
 
 }

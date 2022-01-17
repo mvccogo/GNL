@@ -3,16 +3,16 @@
 #include "NetQueue.h"
 #include "NetPacket.h"
 #include "NetConnection.h"
-#include "SITServer.h"
+#include "Server.h"
 #include "NetServerApp.h"
 #include "World.h"
 
-using namespace SITNet;
+using namespace NetLib;
 
 int main() {
-	uint32_t port = 9313;
+	uint32_t port = 2222;
 	
-	SITServer server(port);
+	Server server(port);
 	server.Start();
 
 	while (1)

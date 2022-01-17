@@ -1,11 +1,11 @@
 
-#include "SITClient.h"
+#include "Client.h"
 
-using namespace SITNet;
+using namespace NetLib;
 /*
 int main() {
 
-	SITClient c;
+	Client c;
 	c.Connect("26.161.88.164", 5000);
 
 	bool key[3] = { false, false, false };

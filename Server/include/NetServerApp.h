@@ -5,14 +5,13 @@
 #include "NetConnection.h"
 
 
-namespace SITNet {
+namespace NetLib {
 	template <typename T>
 	class ServerApp {
 	public:
 		ServerApp(uint16_t port)
-			: m_ASIOAcceptor(m_ASIOContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
+			: m_ASIOAcceptor(m_ASIOContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port), true)
 		{
-
 		}
 			
 		~ServerApp()
@@ -75,14 +74,19 @@ namespace SITNet {
 		void SendToClient(std::shared_ptr<Connection<T>>& client, const Packet<T>& pkt) {
 			if (client && client->IsConnected())
 			{
-				client->Send(pkt);
+				client->SendPacket(pkt);
 			}
 			else
 			{
 				OnClientDisconnect(client);
+				m_Connections.erase(std::remove(m_Connections.begin(), m_Connections.end(), client), m_Connections.end());
 				client.reset();
-				m_Connections.erase(
-					std::remove(m_Connections.begin(), m_Connections.end(), client), m_Connections.end());
+
+				std::cout << "Connection deque after removal: " << std::endl;
+				for (int i = 0; i < m_Connections.size(); i++) {
+					std::cout << "[" << m_Connections.at(i)->GetID() << "]\n";
+
+				}
 			}
 		}
 		void SendToAll(const Packet<T>& pkt, std::shared_ptr<Connection<T>>& ignore_client = nullptr) {
@@ -97,16 +101,17 @@ namespace SITNet {
 				}
 				else
 				{
-		
 					OnClientDisconnect(client);
 					client.reset();
 					bInvalidClientExists = true;
 				}
 			}
 
-			if (bInvalidClientExists)
+			if (bInvalidClientExists) {
 				m_Connections.erase(
 					std::remove(m_Connections.begin(), m_Connections.end(), nullptr), m_Connections.end());
+				
+			}
 		}
 		void Process(size_t max_pkt = -1, bool wait = false) {
 			if (wait) m_PktIn.wait();

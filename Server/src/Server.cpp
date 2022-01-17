@@ -1,28 +1,28 @@
-#include "SITServer.h"
+#include "Server.h"
 #include "World.h"
 #include "Character.h"
 
 
-using namespace SITNet;
+using namespace NetLib;
 using namespace std;
 //using namespace SITGame;
 
 
-SITServer::SITServer(uint16_t port) : ServerApp(port) {
+Server::Server(uint16_t port) : ServerApp(port) {
 	m_World = make_shared<World>();
 }
 
-SITServer::~SITServer() {
+Server::~Server() {
 
 
 }
-void SITServer::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt) {
+void Server::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& pkt) {
 	switch (pkt.header.cmdID)
 	{
 	case CMD::Ping:
 	{
 		std::cout << "[" << client->GetID() << "]: Server Ping\n";
-		client->SendPacket(pkt);
+		SendToClient(client, pkt);
 	}
 	break;
 
@@ -47,31 +47,48 @@ void SITServer::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& 
 		cha->SetWorld(m_World);
 		m_World->AddChaToWorld(cha->GetID(), *cha);
 
-		Packet<CMD> pkt;
+		Packet<CMD> pkt; 
 		pkt.header.cmdID = CMD::SelfEnterWorld;
-
+		std::vector<shared_ptr<NetLib::Connection<NetLib::CMD>>> notifylist;
 		for (auto i = m_World->m_chaMap.begin(); i != m_World->m_chaMap.end(); i++) {
 			pkt << i->second.GetID();
 			pkt << i->second.GetPosX();
 			pkt << i->second.GetPosY();
+			notifylist.push_back(i->second.GetConnection());
+			// Will this always work?
 		}
+
 		pkt << static_cast<uint32_t>(m_World->m_chaMap.size());
 		pkt << cha->GetID();
-		client->SendPacket(pkt);
+		
+		Packet<CMD> pkt2; // To be sent for the other players
+		pkt2.header.cmdID = CMD::PlyEnterWorld;
+		pkt2 << cha->GetID();
+		pkt2 << cha->GetPosX();
+		pkt2 << cha->GetPosY();
+		for (auto i = notifylist.begin(); i != notifylist.end(); i++) {
+			SendToClient(*i, pkt2);
+		}
 
-		pkt.header.cmdID = CMD::PlyEnterWorld;
-
+		SendToClient(client, pkt);
+		/*
 		for (auto i = m_World->m_chaMap.begin(); i != m_World->m_chaMap.end(); i++) {
+			pkt.header.cmdID = CMD::PlyEnterWorld;
+			pkt.body.clear();
+
 			if (cha->GetID() == i->second.GetID()) {
 				cout << "Not sending to the same char..." << endl;
+				continue;
 			}
 			pkt << cha->GetID();
 			pkt << cha->GetPosX();
 			pkt << cha->GetPosY();
-			i->second.GetConnection()->SendPacket(pkt);
-		}
-
+			auto client = i->second.GetConnection();
+			SendToClient(client, pkt);
+		}*/
+	
 	}
+		
 	break;
 	case CMD::MovePlayer:
 	{
@@ -91,4 +108,10 @@ void SITServer::OnPacket(std::shared_ptr<Connection<CMD>>& client, Packet<CMD>& 
 		}
 	}
 	}
+}
+
+
+void Server::OnClientDisconnect(std::shared_ptr<Connection<CMD>>& client) {
+		std::cout << "Removing client [" << client->GetID() << "]\n";
+		m_World->RemoveChaFromWorld(client->GetID());
 }

@@ -6,7 +6,7 @@
 #include <core/Godot.hpp>
 #include <gen/Node.hpp>
 #include <core/Ref.hpp>
-#include "SITClient.h"
+#include "Client.h"
 #include <gen/Object.hpp>
 
 
@@ -21,7 +21,8 @@ namespace godot {
 
 		void _init();
 		void _process(float delta);
-		void Connect();
+		void Connect(String host, uint16_t port);
+		void Disconnect();
 
 		void SendPacket();
 		void WriteCmd(uint16_t cmdID);
@@ -40,9 +41,9 @@ namespace godot {
 		String		ReadString();
 		double_t    ReadDouble();
 	private:
-		SITNet::SITClient					m_sitclient;
-		SITNet::Packet<SITNet::CMD>			m_pktIn;
-		SITNet::Packet<SITNet::CMD>			m_pktOut;
+		NetLib::Client					m_Client;
+		NetLib::Packet<NetLib::CMD>			m_pktIn;
+		NetLib::Packet<NetLib::CMD>			m_pktOut;
 		
 	};
 }

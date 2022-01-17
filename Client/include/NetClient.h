@@ -5,7 +5,7 @@
 #include "NetConnection.h"
 
 
-namespace SITNet {
+namespace NetLib {
 
 	template <typename T>
 	class ClientApp {

@@ -1,14 +1,14 @@
 #pragma once
 #include "NetClient.h"
 
-namespace SITNet {
-	class SITClient : public ClientApp<CMD>
+namespace NetLib {
+	class Client : public ClientApp<CMD>
 	{
 	public:
-		SITClient(){
+		Client(){
 	
 		}
-		~SITClient() {
+		~Client() {
 		
 		};
 
@@ -16,8 +16,8 @@ namespace SITNet {
 		void PingServer()
 		{
 
-			SITNet::Packet <SITNet::CMD> pkt;
-			pkt.header.cmdID = SITNet::CMD::Ping;
+			NetLib::Packet <NetLib::CMD> pkt;
+			pkt.header.cmdID = NetLib::CMD::Ping;
 			std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
 			pkt << timeNow;
 			//SendToServer(pkt);

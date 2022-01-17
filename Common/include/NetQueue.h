@@ -2,7 +2,7 @@
 #include "NetCommon.h"
 
 
-namespace SITNet {
+namespace NetLib {
 	template <typename T>
 	class NetQueue {
 

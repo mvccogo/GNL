@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{56002a2d-6545-44cf-8c2d-d3a27fb3f4b2}</ProjectGuid>
-    <RootNamespace>SITClient</RootNamespace>
+    <ProjectGuid>{84a7e068-2cd2-4dbe-9020-21423c1f322a}</ProjectGuid>
+    <RootNamespace>Server</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,19 +72,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\SITCommon\include;$(ProjectDir)..\godot-cpp\include;$(ProjectDir)..\godot-cpp\godot-headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\Common\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\SITCommon\include;$(ProjectDir)..\godot-cpp\include;$(ProjectDir)..\godot-cpp\godot-headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\Common\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\SITCommon\include;$(ProjectDir)..\godot-cpp\include;$(ProjectDir)..\godot-cpp\godot-headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\Common\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\SITCommon\include;$(ProjectDir)..\godot-cpp\include;$(ProjectDir)..\godot-cpp\godot-headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\commonlibs\asio\include\;$(ProjectDir)\include;$(ProjectDir)..\Common\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\temp\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,7 +105,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\godot-cpp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)\;F:\Github\stumbledinthumbs\NetworkLib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,7 +124,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\godot-cpp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)\;F:\Github\stumbledinthumbs\NetworkLib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,8 +139,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\godot-cpp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libgodot-cpp.windows.debug.64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)\;F:\Github\stumbledinthumbs\NetworkLib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,18 +158,31 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\godot-cpp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)\;F:\Github\stumbledinthumbs\NetworkLib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\GDNative.h" />
-    <ClInclude Include="include\NetClient.h" />
-    <ClInclude Include="include\SITClient.h" />
+    <ClCompile Include="src\Character.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Server.cpp" />
+    <ClCompile Include="src\World.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\gdlibrary.cpp" />
-    <ClCompile Include="src\GDNative.cpp" />
-    <ClCompile Include="src\Main.cpp" />
+    <ClInclude Include="include\Character.h" />
+    <ClInclude Include="include\NetServerApp.h" />
+    <ClInclude Include="include\Server.h" />
+    <ClInclude Include="include\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

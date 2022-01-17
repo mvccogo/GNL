@@ -2,7 +2,7 @@
 #include "NetCommon.h"
 
 
-namespace SITNet {
+namespace NetLib {
 
 	enum class CMD : uint16_t {
 		Invalid,

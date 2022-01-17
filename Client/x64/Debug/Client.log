@@ -1,0 +1,7 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(519,5): warning MSB8028: O diretório intermediário (x64\Debug\) contém arquivos compartilhados de outro projeto (SITClient.vcxproj). Isso pode levar a um comportamento incorreto de limpeza e recompilação.
+  gdlibrary.cpp
+D:\Github\GNL\godot-cpp\include\core\Defs.hpp(90,10): fatal error C1083: Não é possível abrir arquivo incluir: 'GodotGlobal.hpp': No such file or directory
+  GDNative.cpp
+D:\Github\GNL\godot-cpp\include\core\Defs.hpp(90,10): fatal error C1083: Não é possível abrir arquivo incluir: 'GodotGlobal.hpp': No such file or directory
+  Main.cpp
+  Gerando Código...
