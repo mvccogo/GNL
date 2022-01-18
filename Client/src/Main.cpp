@@ -37,10 +37,10 @@ int main() {
 
 				switch (msg.header.cmdID)
 				{
-				case CMD::AcceptConnection:
+				case CMD::AcceptTCPConnection:
 				{
 					// Server has responded to a ping request				
-					std::cout << "Server Accepted Connection\n";
+					std::cout << "Server Accepted TCPConnection\n";
 				}
 				break;
 

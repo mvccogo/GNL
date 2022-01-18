@@ -64,7 +64,7 @@ namespace NetLib
 
 
 		void SendPacket(const Packet<T>& pkt) {
-			//std::unique_lock<std::mutex> ul(m_PktOut.GetQMutex());
+			std::unique_lock<std::mutex> ul(m_PktOut.GetQMutex());
 			asio::post(m_ASIOContext,
 				[this, pkt]()
 				{
@@ -183,12 +183,6 @@ namespace NetLib
 
 			ReadHeader();
 		}
-
-
-
-
-
-		
 		
 	private:
 		
@@ -199,7 +193,6 @@ namespace NetLib
 		ConnectType					m_Type;
 		Packet<T>					m_tmpPktIn;
 		NetQueue<Packet<T>>			m_PktOut;
-		
 		NetQueue<OwnedPacket<T>>&	m_PktIn;
 
 

@@ -87,7 +87,6 @@ namespace NetLib {
 	struct OwnedPacket {
 		std::shared_ptr<TCPConnection<T>> connectionPtr = nullptr;
 		Packet<T> pkt;
-
 	};
 
 }

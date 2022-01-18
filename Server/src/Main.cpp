@@ -2,7 +2,7 @@
 #include "NetCommon.h"
 #include "NetQueue.h"
 #include "NetPacket.h"
-#include "NetConnection.h"
+#include "NetTCPConnection.h"
 #include "Server.h"
 #include "NetServerApp.h"
 #include "World.h"

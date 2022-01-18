@@ -156,9 +156,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\NetCommon.h" />
-    <ClInclude Include="include\NetConnection.h" />
+    <ClInclude Include="include\NetTCPConnection.h" />
     <ClInclude Include="include\NetPacket.h" />
     <ClInclude Include="include\NetQueue.h" />
+    <ClInclude Include="include\NetUDP.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
